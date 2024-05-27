@@ -1,0 +1,43 @@
+- name: SG rules for frontend,backend,db,bastion,ansible
+  SG:
+  - expense-dev-frontend
+  - expense-dev-backend
+  - expense-dev-db
+  - expense-dev-bastion
+  - expense-dev-ansible
+  tasks:
+  expense-dev-frontend: SG inbound rules for frontend sg
+    - name: frontend accepting connections from public
+      port: 80
+      source: public(0.0.0.0/0)
+    - name: frontend accepting connections from ansible
+      port: 22
+      source: sg attached to ansible
+    - name: frontend accepting connections from bastion
+      port: 22
+      source: sg attached to bastion host
+  expense-dev-backend:  SG inbound rules for backend sg
+    - name: backend accepting connections from frontend
+      port: 8080
+      source: sg attached to frontend
+    - name: backend accepting connections from ansible
+      port: 22
+      source: sg attached to ansible
+    - name: backend accepting connections from bastion host
+      port: 22
+      source: sg attached to bastion host
+  expense-dev-db: SG inbound rules for db
+    - name: db accepting connections from backend
+      port: 3306
+      source: sg attached to backend
+    - name: db accepting connections from bastion
+      port: 3306
+      source: sg attached to bastion host
+  expense-dev-bastion:  SG inbound rules for bastion
+    - name: bastion accepting connections from public
+      port: 22
+      source: ["0.0.0.0/0"] # we can give our systems public ip but it keeps on changing, so we must give public 
+  expense-dev-ansible:  SG inbound rules for ansible
+    - name: ansible accepting connections from public
+      port: 22
+      source: ["0.0.0.0/0"] # we can give our systems public ip but it keeps on changing, so we must give public
