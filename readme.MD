@@ -2,7 +2,7 @@
 
 ## expenses project using terraform
 
-In every project provisioning the infrastructure is the first step we do.In this project we are deploying 3-tier architecture in AWS using terraform and ansible.For high availability, we are provisioning the infrastructure in multiple availability zones. By using terraform provisioning the infrastructure and by using ansible configuring the servers. To provision the infrastructure,we are using our own modules and opensource modules as well. To provision vpc,we are using our own VPC module. To provision security groups, we are using our own SG module. To provision frontend and backend server, we are using open source module. To provision db server, we are using Amazon RDS service in aws. To configure frontend and backend servers we are integrating terraform with ansible. To configure Db server, we are using opensource RDS module.
+In every project provisioning the infrastructure is the first step we do.In this project we are  deploying 3-tier architecture in AWS using terraform and ansible.For high availability, we are provisioning the infrastructure in multiple availability zones. By using terraform provisioning the infrastructure and by using ansible configuring the servers. To provision the infrastructure,we are using our own modules and opensource modules as well. To provision vpc,we are using our own VPC module. To provision security groups, we are using our own SG module. To provision frontend and backend server, we are using open source module. To provision db server, we are using Amazon RDS service in aws. To configure frontend and backend servers we are integrating terraform with ansible. To configure Db server, we are using opensource RDS module.
 
 
 # VPC - virtual private cloud
@@ -28,7 +28,7 @@ By using vpc module we are creating below resources in aws
 * peering if required
 * adding routes in route tables of all the subnets in vpc for peering connection between requestor and acceptor vpc
 
-# SECURITY GROUPS
+# Security Groups
 
 By using SG module we are creating SG for each instance. In our project we have a requirement to create SG for each instance that gets created
 
@@ -55,4 +55,22 @@ By using SG module we are creating SG for each instance. In our project we have 
 
 # Instances
 
+By using open source module we create 
+- bastion host
+- Ansible server
+- frontend server
+- backend server
 
+By using Amazon RDS we create
+- db server
+
+bastion host is launched in public subnet so that backend,db running in private subets can be accessed to troubleshoot,to check connection etc
+ansible server is launched in public subnet to configure frontend and backend servers
+db server is configured by Amazon RDS automatically
+
+# route53 records
+
+After launching and configuring the servers we create route 53 records using open source module
+- route53 record for db server using its endpoint created by RDS
+- route53 record for backend using its private IP
+- rouete53 record for frontend using its public IP

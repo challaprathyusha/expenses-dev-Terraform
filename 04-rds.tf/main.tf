@@ -9,8 +9,8 @@ module "db" {
   #storage capacity for mysql
   allocated_storage = 5
 
-#for HA we can set this as true,in free tier we are not using HA
-#  multi_az = true
+# for HA we can set this as true,in free tier we are not using HA
+# multi_az = true
 
   db_name  = "transactions" #default schema for expenses project
   username = "root"
@@ -19,15 +19,6 @@ module "db" {
 # iam_database_authentication_enabled = true
 
   vpc_security_group_ids = [data.aws_ssm_parameter.db_sg_id.value]
-
-#  maintenance_window = "Mon:00:00-Mon:03:00"
-#  backup_window      = "03:00-06:00"
-
-  # Enhanced Monitoring - see example for details on how to create the role
-  # by yourself, in case you don't want to create it automatically
-#  monitoring_interval    = "30"
-#  monitoring_role_name   = "MyRDSMonitoringRole"
-#  create_monitoring_role = true
 
   tags = merge(
     var.common_tags,
