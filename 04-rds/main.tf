@@ -78,3 +78,23 @@ module "db" {
     },
   ]
 }
+
+#creating route53 records using opensource module
+# module "records" {
+#   source  = "terraform-aws-modules/route53/aws//modules/records"
+#   version = "~> 2.0"
+
+#   zone_name = var.zone_name
+
+#   records = [
+#     {
+#       name    = "db"
+#       type    = "A"
+#       ttl     = 3600
+#       records = [
+#         "10.10.10.10",
+#       ]
+#     }
+#   ]
+
+# }

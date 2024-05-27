@@ -19,3 +19,9 @@ variable "common_tags" {
     }
 
 }
+
+variable "zone_name" {
+    type = string
+    default = "expensesnote.site"
+  
+}
