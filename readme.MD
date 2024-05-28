@@ -64,13 +64,16 @@ By using open source module we create
 By using Amazon RDS we create
 - db server
 
-bastion host is launched in public subnet so that backend,db running in private subets can be accessed to troubleshoot,to check connection etc
-ansible server is launched in public subnet to configure frontend and backend servers
-db server is configured by Amazon RDS automatically
+* backend and db servers are not accessible to anyone outside of vpc, so we use bastion host to connect to backend and db server.
+* User will access bastion using ssh and from bastion he can access backend on port 22,db on 3306
+* bastion host is launched in public subnet so that backend,db running in private subets can be   accessed to troubleshoot,to check connection etc
+* ansible server is launched in public subnet to configure frontend and backend servers
+* db server is configured by Amazon RDS automatically
+* If ansible connects to frontend using its public IP, the request from ansible goes outside vpc and comes to frontend from somewhere but not from ansible.Hence in ansible inventory file we are providing private IP of frontend.
 
 # route53 records
 
 After launching and configuring the servers we create route 53 records using open source module
-- route53 record for db server using its endpoint created by RDS
+- route53 record for db server using its endpoint 
 - route53 record for backend using its private IP
 - rouete53 record for frontend using its public IP
