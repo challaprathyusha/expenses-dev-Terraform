@@ -2,7 +2,7 @@
 
 ## expenses project using terraform
 
-In every project provisioning the infrastructure is the first step we do.In this project we are  deploying 3-tier architecture in AWS using terraform and ansible.For high availability, we are provisioning the infrastructure in multiple availability zones. By using terraform provisioning the infrastructure and by using ansible configuring the servers. To provision the infrastructure,we are using our own modules and opensource modules as well. To provision vpc,we are using our own VPC module. To provision security groups, we are using our own SG module. To provision frontend and backend server, we are using open source module. To provision db server, we are using Amazon RDS service in aws. To configure frontend and backend servers we are integrating terraform with ansible. To configure Db server, we are using opensource RDS module.
+In every project provisioning the infrastructure is the first step we do.In this project we will  deploy 3-tier architecture in AWS using terraform and ansible.For high availability,fault tolerance and disaster recovery, we deploy the application in multiple availability zones in us-east-1 region. By using terraform provisioning the infrastructure, using ansible configuring the frontend and backend servers. To provision vpc,we are using our own VPC module. To provision security groups, we are using our own SG module. To provision frontend and backend server, we are using open source module. To provision db server, we are using Amazon RDS service.Amazon RDS creates db servers in the  To configure frontend and backend servers we are integrating terraform with ansible. To configure Db server, we are using opensource RDS module.
 
 
 # VPC - virtual private cloud
@@ -17,7 +17,8 @@ By using vpc module we are creating below resources in aws
 * 2 database subnets in two azs for HA 
 * Database subnet group for all the DB subnets created
 * Elastic ip address to provide static IP for NAT gateway
-* NAT gateway to give access to the instances running in private and db subnets
+* NAT gateway to give access to the instances running in private and db subnets. 
+    * Public NAT gateway should be associated with an Elastic IP. As AWS frequently changes the     public IP addresses of the resources created in public subnet, we should associate an elastic IP to the NAT gateway
 * public route table for 2 public subnets 
 * private route table for 2 private subnets
 * database route table for 2 db subnets
@@ -56,24 +57,39 @@ By using SG module we are creating SG for each instance. In our project we have 
 # Instances
 
 By using open source module we create 
-- bastion host
-- Ansible server
-- frontend server
-- backend server
+- bastion host in public subnet
+- frontend server public subnet
+- backend server private subnet
+- Ansible server public subnet
 
 By using Amazon RDS we create
-- db server
+- db server in db subnet
 
-* backend and db servers are not accessible to anyone outside of vpc, so we use bastion host to connect to backend and db server.
+* Backend and db servers are not accessible to anyone outside of vpc, so we use bastion host to connect to backend and db server.
 * User will access bastion using ssh and from bastion he can access backend on port 22,db on 3306
-* bastion host is launched in public subnet so that backend,db running in private subets can be   accessed to troubleshoot,to check connection etc
-* ansible server is launched in public subnet to configure frontend and backend servers
-* db server is configured by Amazon RDS automatically
-* If ansible connects to frontend using its public IP, the request from ansible goes outside vpc and comes to frontend from somewhere but not from ansible.Hence in ansible inventory file we are providing private IP of frontend.
+* Bastion host is launched in public subnet so that backend,db running in private subets can be   accessed through it to.
+* Frontend and backend servers should be launched before the ansible.
+* Ansible server is launched in public subnet to configure frontend and backend servers.
+* db server is configured by Amazon RDS automatically.
+* If ansible connects to frontend using its public IP, the request from ansible goes outside vpc and comes to frontend from somewhere but not from ansible.Hence in ansible inventory file we should provide private IP of frontend.
 
 # route53 records
 
-After launching and configuring the servers we create route 53 records using open source module
+After launching the servers we create route 53 records using open source module
 - route53 record for db server using its endpoint 
 - route53 record for backend using its private IP
 - rouete53 record for frontend using its public IP
+
+===========================================================================================
+* When we connect to frontend by using its public IP through bastion host that's running with in vpc, the request from bastion goes outside vpc and comes back to frontend from somewhare in the internet, then frontend could not read where the connection is from and it throws connection timeout error.So the servers running in same network should connect using only private IP's not with public IP's.
+
+
+* By implementing this architecture, we successfully deploy 3-tier application into aws using terraform.
+* Now the application will be accessible to public through frontend.
+* This is the basic application architecture that we designed and implemented.
+* This implementation don't address the HA and downtime of application.
+* Load balancers and autoscaling provide HA and scalability for the application.
+* But if there are multiple servers accepting connections from users, we should address that using load balancers and auto scaling.
+* If there are any deployments, we must use load balancers and auto scaling concepts which will address the downtime of the application.
+
+

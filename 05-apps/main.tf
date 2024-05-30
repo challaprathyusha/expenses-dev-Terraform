@@ -47,6 +47,7 @@ module "ansible" {
 #convert stringlist to list(string) and get the first element
   subnet_id              = local.subnet_id_frontend
 #we are launching ansible server with userdata so that it will automatically configures frontend and backend servers
+#userdata runs only when terraform creates ansible server in aws
   user_data = file("expenses.sh")
 
   tags = merge(
