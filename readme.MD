@@ -18,7 +18,9 @@ By using vpc module we are creating below resources in aws
 * Database subnet group for all the DB subnets created
 * Elastic ip address to provide static IP for NAT gateway
 * NAT gateway to give access to the instances running in private and db subnets. 
-    * Public NAT gateway should be associated with an Elastic IP. As AWS frequently changes the     public IP addresses of the resources created in public subnet, we should associate an elastic IP to the NAT gateway
+    * Public NAT gateway should be associated with an Elastic IP. As aws frequently changes the     public IP addresses of the resources created in public subnet, we should associate an elastic IP to the NAT gateway
+    * For private instances running in private subnets to access the internet for any updates,system packages,security patches etc, we launch NAT gateway in public subnet and add routes for private subnets to the NAT gateway.
+    * NAT gateway can provide outbound connection for the private instances, doesn't provide any  inbound connections to them.
 * public route table for 2 public subnets 
 * private route table for 2 private subnets
 * database route table for 2 db subnets
