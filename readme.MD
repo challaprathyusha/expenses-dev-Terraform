@@ -89,9 +89,14 @@ After launching the servers we create route 53 records using open source module
 * By implementing this architecture, we successfully deploy 3-tier application into aws using terraform.
 * Now the application will be accessible to public through frontend.
 * This is the basic application architecture that we designed and implemented.
-* This implementation don't address the HA and downtime of application.
-* Load balancers and autoscaling provide HA and scalability for the application.
-* But if there are multiple servers accepting connections from users, we should address that using load balancers and auto scaling.
-* If there are any deployments, we must use load balancers and auto scaling concepts which will address the downtime of the application.
+
+## Disadvantages of this method:
+* This implementation don't address the HA,downtime and not cost effective as well. 
+* When multiple servers are running in the frontend/backend,the traffic should be equally distribbuted between the servers.
+* Load balancer provides HA of the application by doing health checks on the servers and sending traffic to the servers which are active.
+* Autoscaling provides scalability of the application based on the incoming traffic on to the servers
+* Deployments can be handled by autoscaling group without any downtime of the application.
+* But if there are multiple servers accepting connections from users, we should address that using load balancers.
+* If there are any deployments, we must use autoscaling group which will address the downtime of the application.
 
 
