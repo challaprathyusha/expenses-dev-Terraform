@@ -46,7 +46,7 @@ module "ansible" {
   vpc_security_group_ids = [data.aws_ssm_parameter.ansible_sg_id.value]
 #convert stringlist to list(string) and get the first element
   subnet_id              = local.subnet_id_frontend
-#we are launching ansible server with userdata so that it will automatically configures frontend and backend servers
+#we are launching ansible server with userdata so that it will automatically configure frontend and backend servers
 #userdata runs only when terraform creates ansible server in aws
   user_data = file("expenses.sh")
 
